@@ -1,0 +1,1077 @@
+<html lang="es">
+ <head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Viajes Bogotá</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+   href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap"
+   rel="stylesheet"
+  />
+  <link
+   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+   rel="stylesheet"
+  />
+  <style>
+   body {
+    font-family: "Poppins", sans-serif;
+    background: #121417;
+    color: #fff;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .shadow-text {
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+  }
+  button:focus-visible {
+    outline-offset: 2px;
+    outline: 2px solid transparent;
+    box-shadow: none;
+  }
+  .btn-day,
+  .btn-time {
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 9999px;
+    padding: 0.5rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    user-select: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    min-width: 48px;
+    min-height: 48px;
+    background-color: #2b2f3a;
+    color: rgba(255 255 255 / 0.9);
+    box-shadow: inset 0 0 5px #00000088;
+  }
+  .btn-day.selected,
+  .btn-time.selected {
+    background-color: #f75a2b;
+    color: white;
+    box-shadow: 0 0 12px #f75a2b;
+    transform: scale(1.1);
+    transition: background-color 0.3s ease, color 0.3s ease,
+      box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .btn-time {
+    font-size: 0.875rem;
+    padding: 0.75rem 2rem;
+  }
+  .btn-time i {
+    font-size: 1.1rem;
+  }
+  header {
+    padding: 1.5rem 1.25rem 0.5rem;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  header h1 {
+    font-weight: 800;
+    font-size: 2.25rem;
+    margin-bottom: 0.25rem;
+  }
+  header p {
+    font-weight: 400;
+    font-size: 1rem;
+    color: #bbb;
+  }
+  main {
+    flex-grow: 1;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 1.25rem 6rem;
+  }
+  section {
+    background: #22262e;
+    border-radius: 1.5rem;
+    padding: 1.5rem 1.5rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 0 15px #00000088;
+  }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .calendar-grid .btn-day {
+    font-weight: 700;
+    font-size: 0.7rem;
+    flex-direction: column;
+    padding: 0.5rem 0.25rem;
+    min-width: auto;
+    min-height: auto;
+    box-shadow: none;
+    background: transparent;
+    color: #bbb;
+    cursor: default;
+  }
+  .calendar-grid .btn-day.selected {
+    background-color: #f75a2b;
+    color: white;
+    box-shadow: 0 0 12px #f75a2b;
+    cursor: pointer;
+  }
+  .calendar-grid .btn-day span {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-top: 0.15rem;
+  }
+  .time-filters {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  .time-filters button {
+    flex-shrink: 0;
+  }
+  h2.section-title {
+    font-weight: 800;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #f75a2b;
+  }
+  .localidad-btn {
+    width: 100%;
+    text-align: left;
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: white;
+    box-shadow: inset 0 0 15px #000000aa;
+    cursor: pointer;
+    background: linear-gradient(90deg, #4a90ff 0%, #1e6fff 100%);
+    transition: background-color 0.3s ease;
+  }
+  .localidad-btn.orange {
+    background: linear-gradient(90deg, #ff6e40 0%, #f75a2b 100%);
+  }
+  .localidad-btn:hover {
+    background-color: #155fcc;
+  }
+  .localidad-btn.orange:hover {
+    background-color: #e04e22;
+  }
+  nav.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 480px;
+    width: 100%;
+    background: #2b2f3a;
+    border-radius: 1.5rem 1.5rem 0 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.75rem 0;
+    box-shadow: 0 0 15px #000000bb;
+    z-index: 100;
+  }
+  nav.bottom-nav button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #bbb;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  nav.bottom-nav button.active,
+  nav.bottom-nav button:hover {
+    color: #f75a2b;
+  }
+  nav.bottom-nav button i {
+    font-size: 1.5rem;
+  }
+  /* Modal styles */
+  .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .modal-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modal-container {
+    background: #22262e;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    width: 90vw;
+    max-width: 480px;
+    box-shadow: 0 0 15px #f75a2baa;
+    transform: translateY(30px);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+  }
+  .modal-backdrop.show .modal-container {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: #f75a2b;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  .modal-close:hover {
+    color: #e04e22;
+  }
+  /* Modal content */
+  .modal-title {
+    font-weight: 800;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #f75a2b;
+  }
+  .modal-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #ddd;
+    margin-bottom: 1rem;
+  }
+  .modal-section-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #f75a2b;
+  }
+  /* Login form */
+  .modal-container input[type="email"],
+  .modal-container input[type="password"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.75rem;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: #2b2f3a;
+    color: white;
+    box-shadow: inset 0 0 5px #000000aa;
+    transition: box-shadow 0.3s ease;
+  }
+  .modal-container input[type="email"]:focus,
+  .modal-container input[type="password"]:focus {
+    outline: none;
+    box-shadow: 0 0 8px #f75a2b;
+  }
+  .submit-btn {
+    width: 100%;
+    background: #f75a2b;
+    color: white;
+    font-weight: 800;
+    padding: 0.75rem 0;
+    border-radius: 0.75rem;
+    font-size: 1.1rem;
+    box-shadow: 0 0 10px #f75a2b;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .submit-btn:hover {
+    background: #e04e22;
+  }
+  .spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    left: 1rem;
+    display: none;
+  }
+  .submit-btn.loading .spinner {
+    display: block;
+  }
+  .submit-btn.loading span {
+    margin-left: 1.5rem;
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  /* Localidad buttons */
+  .localidad-btn {
+    width: 100%;
+    text-align: left;
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: white;
+    box-shadow: inset 0 0 15px #000000aa;
+    cursor: pointer;
+    background: linear-gradient(90deg, #4a90ff 0%, #1e6fff 100%);
+    transition: background-color 0.3s ease;
+  }
+  .localidad-btn.orange {
+    background: linear-gradient(90deg, #ff6e40 0%, #f75a2b 100%);
+  }
+  .localidad-btn:hover {
+    background-color: #155fcc;
+  }
+  .localidad-btn.orange:hover {
+    background-color: #e04e22;
+  }
+  /* Footer */
+  footer {
+    background-color: #22262e;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #999999;
+    user-select: none;
+  }
+  footer .social-icons {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  footer .social-icons a {
+    color: #999999;
+    font-size: 1.25rem;
+    transition: color 0.3s ease;
+  }
+  footer .social-icons a:hover {
+    color: #f75a2b;
+  }
+  /* Scrollbar styling for modal */
+  .modal-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  .modal-container::-webkit-scrollbar-track {
+    background: #22262e;
+    border-radius: 1rem;
+  }
+  .modal-container::-webkit-scrollbar-thumb {
+    background-color: #f75a2b;
+    border-radius: 1rem;
+  }
+  </style>
+ </head>
+ <body>
+  <header>
+   <h1 class="shadow-text">Viajes Bogotá</h1>
+   <p class="shadow-text">Explora las localidades y planifica tu recorrido</p>
+  </header>
+  <main>
+   <section aria-label="Calendario y filtros">
+    <div class="calendar-grid" role="list" aria-label="Días de la semana">
+     <button aria-pressed="false" class="btn-day" type="button" data-day="dom" role="listitem" tabindex="0">
+      DOM<span>11</span>
+     </button>
+     <button aria-pressed="false" class="btn-day" type="button" data-day="lun" role="listitem" tabindex="0">
+      LUN<span>12</span>
+     </button>
+     <button aria-pressed="false" class="btn-day" type="button" data-day="mar" role="listitem" tabindex="0">
+      MAR<span>13</span>
+     </button>
+     <button aria-pressed="true" class="btn-day selected" type="button" data-day="mié" role="listitem" tabindex="0">
+      MIÉ<span>14</span>
+     </button>
+     <button aria-pressed="false" class="btn-day" type="button" data-day="jue" role="listitem" tabindex="0">
+      JUE<span>15</span>
+     </button>
+     <button aria-pressed="false" class="btn-day" type="button" data-day="vie" role="listitem" tabindex="0">
+      VIE<span>16</span>
+     </button>
+     <button aria-pressed="false" class="btn-day" type="button" data-day="sáb" role="listitem" tabindex="0">
+      SÁB<span>17</span>
+     </button>
+    </div>
+    <div class="time-filters" role="group" aria-label="Filtros de tiempo">
+     <button aria-pressed="false" class="btn-time" type="button" data-time="tarde" tabindex="0">
+      <i class="fas fa-sun"></i>TARDE
+     </button>
+     <button aria-pressed="false" class="btn-time" type="button" data-time="noche" tabindex="0">
+      <i class="fas fa-moon"></i>NOCHE
+     </button>
+    </div>
+   </section>
+   <section aria-label="Localidades para viajar">
+    <h2 class="section-title">A DÓNDE QUIERES VIAJAR</h2>
+    <div id="localidades-list" class="space-y-3" role="list">
+     <button
+      class="localidad-btn"
+      type="button"
+      data-localidad="Usaquén"
+      role="listitem"
+     >
+      Usaquén
+     </button>
+     <button
+      class="localidad-btn"
+      type="button"
+      data-localidad="Chapinero"
+      role="listitem"
+     >
+      Chapinero
+     </button>
+     <button
+      class="localidad-btn"
+      type="button"
+      data-localidad="Santa Fe"
+      role="listitem"
+     >
+      Santa Fe
+     </button>
+     <button
+      class="localidad-btn"
+      type="button"
+      data-localidad="San Cristóbal"
+      role="listitem"
+     >
+      San Cristóbal
+     </button>
+     <button
+      class="localidad-btn"
+      type="button"
+      data-localidad="Usme"
+      role="listitem"
+     >
+      Usme
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Tunjuelito"
+      role="listitem"
+     >
+      Tunjuelito
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Bosa"
+      role="listitem"
+     >
+      Bosa
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Kennedy"
+      role="listitem"
+     >
+      Kennedy
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Fontibón"
+      role="listitem"
+     >
+      Fontibón
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Engativá"
+      role="listitem"
+     >
+      Engativá
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Suba"
+      role="listitem"
+     >
+      Suba
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Barrios Unidos"
+      role="listitem"
+     >
+      Barrios Unidos
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Teusaquillo"
+      role="listitem"
+     >
+      Teusaquillo
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Los Mártires"
+      role="listitem"
+     >
+      Los Mártires
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Antonio Nariño"
+      role="listitem"
+     >
+      Antonio Nariño
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Puente Aranda"
+      role="listitem"
+     >
+      Puente Aranda
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="La Candelaria"
+      role="listitem"
+     >
+      La Candelaria
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Rafael Uribe Uribe"
+      role="listitem"
+     >
+      Rafael Uribe Uribe
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Ciudad Bolívar"
+      role="listitem"
+     >
+      Ciudad Bolívar
+     </button>
+     <button
+      class="localidad-btn orange"
+      type="button"
+      data-localidad="Sumapaz"
+      role="listitem"
+     >
+      Sumapaz
+     </button>
+    </div>
+   </section>
+  </main>
+  <nav class="bottom-nav" aria-label="Navegación principal">
+   <button
+    class="active"
+    type="button"
+    aria-label="Principal"
+    id="btn-principal"
+    tabindex="0"
+   >
+    <i class="fas fa-calendar-alt"></i>
+    <span>HOY</span>
+   </button>
+   <button
+    class="text-white/70"
+    type="button"
+    aria-label="Viaje"
+    id="btn-viaje"
+    tabindex="0"
+   >
+    <i class="fas fa-map"></i>
+    <span>VIAJE</span>
+   </button>
+   <button
+    class="text-white/70"
+    type="button"
+    aria-label="Mío"
+    id="btn-mio"
+    tabindex="0"
+   >
+    <i class="fas fa-user"></i>
+    <span>MÍO</span>
+   </button>
+  </nav>
+
+  <!-- Modal Viaje -->
+  <div
+   id="modal-viaje"
+   class="modal-backdrop"
+   role="dialog"
+   aria-modal="true"
+   aria-labelledby="modal-viaje-title"
+   tabindex="-1"
+  >
+   <div class="modal-container" role="document">
+    <button
+     class="modal-close"
+     aria-label="Cerrar modal viaje"
+     id="close-viaje"
+     type="button"
+    >
+     &times;
+    </button>
+    <h3 id="modal-viaje-title" class="modal-title">Marca tu recorrido</h3>
+    <p class="modal-text">
+     Selecciona los puntos de tu recorrido para planificar tu viaje.
+    </p>
+    <div
+     id="recorrido-list"
+     class="space-y-3 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-[#f75a2b] scrollbar-track-[#22262e] p-2 rounded-lg bg-[#2b2f3a]"
+    >
+     <button
+      class="localidad-btn"
+      type="button"
+      aria-label="Agregar Usaquén al recorrido"
+     >
+      Usaquén
+     </button>
+     <button
+      class="localidad-btn"
+      type="button"
+      aria-label="Agregar Chapinero al recorrido"
+     >
+      Chapinero
+     </button>
+     <button
+      class="localidad-btn"
+      type="button"
+      aria-label="Agregar Santa Fe al recorrido"
+     >
+      Santa Fe
+     </button>
+     <button
+      class="localidad-btn"
+      type="button"
+      aria-label="Agregar San Cristóbal al recorrido"
+     >
+      San Cristóbal
+     </button>
+     <button
+      class="localidad-btn"
+      type="button"
+      aria-label="Agregar Usme al recorrido"
+     >
+      Usme
+     </button>
+    </div>
+    <div class="mt-6 flex justify-center">
+     <button
+      id="btn-save-recorrido"
+      class="bg-[#F75A2B] px-6 py-3 rounded-full font-extrabold text-white shadow-lg hover:bg-[#e04e22] transition-colors"
+      type="button"
+     >
+      Guardar recorrido
+     </button>
+    </div>
+   </div>
+  </div>
+
+  <!-- Modal Mío (Login) -->
+  <div
+   id="modal-mio"
+   class="modal-backdrop"
+   role="dialog"
+   aria-modal="true"
+   aria-labelledby="modal-mio-title"
+   tabindex="-1"
+  >
+   <div class="modal-container" role="document">
+    <button
+     class="modal-close"
+     aria-label="Cerrar modal inicio de sesión"
+     id="close-mio"
+     type="button"
+    >
+     &times;
+    </button>
+    <h3 id="modal-mio-title" class="modal-title">Iniciar Sesión</h3>
+    <form class="space-y-4 relative" id="login-form" novalidate>
+     <input
+      type="email"
+      name="email"
+      placeholder="Correo electrónico"
+      required
+      autocomplete="email"
+      class="bg-[#2b2f3a] text-white rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-[#f75a2b]"
+      value="pruebadaniel@gmail.com"
+     />
+     <input
+      type="password"
+      name="password"
+      placeholder="Contraseña"
+      required
+      autocomplete="current-password"
+      class="bg-[#2b2f3a] text-white rounded-lg p-3 w-full focus:outline-none focus:ring-2 focus:ring-[#f75a2b]"
+      value="Daniel12345"
+     />
+     <button
+      type="submit"
+      class="submit-btn flex items-center justify-center relative"
+      aria-live="polite"
+     >
+      <div class="spinner" aria-hidden="true"></div>
+      <span>Entrar</span>
+     </button>
+    </form>
+   </div>
+  </div>
+
+  <!-- Modal Localidad Info -->
+  <div
+   id="modal-localidad"
+   class="modal-backdrop"
+   role="dialog"
+   aria-modal="true"
+   aria-labelledby="modal-localidad-title"
+   tabindex="-1"
+  >
+   <div class="modal-container" role="document">
+    <button
+     class="modal-close"
+     aria-label="Cerrar modal información localidad"
+     id="close-localidad"
+     type="button"
+    >
+     &times;
+    </button>
+    <h3 id="modal-localidad-title" class="modal-title">Información</h3>
+    <div
+     id="localidad-content"
+     class="text-white space-y-4 text-sm leading-relaxed"
+     tabindex="0"
+    >
+     <!-- Content will be injected here -->
+    </div>
+   </div>
+  </div>
+
+  <footer>
+   <div>beta, creado por Daniel</div>
+   <div class="social-icons mt-1">
+    <a
+     href="#"
+     aria-label="Facebook"
+     target="_blank"
+     rel="noopener noreferrer"
+     ><i class="fab fa-facebook-f"></i
+    ></a>
+    <a
+     href="#"
+     aria-label="Twitter"
+     target="_blank"
+     rel="noopener noreferrer"
+     ><i class="fab fa-twitter"></i
+    ></a>
+    <a
+     href="#"
+     aria-label="Instagram"
+     target="_blank"
+     rel="noopener noreferrer"
+     ><i class="fab fa-instagram"></i
+    ></a>
+    <a
+     href="#"
+     aria-label="LinkedIn"
+     target="_blank"
+     rel="noopener noreferrer"
+     ><i class="fab fa-linkedin-in"></i
+    ></a>
+   </div>
+  </footer>
+
+  <script>
+   // Select day buttons and time buttons
+   const dayButtons = document.querySelectorAll(".btn-day");
+   const timeButtons = document.querySelectorAll(".btn-time");
+
+   dayButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+     dayButtons.forEach((b) => {
+      b.classList.remove("selected");
+      b.setAttribute("aria-pressed", "false");
+     });
+     btn.classList.add("selected");
+     btn.setAttribute("aria-pressed", "true");
+    });
+   });
+
+   timeButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+     timeButtons.forEach((b) => {
+      b.classList.remove("selected");
+      b.setAttribute("aria-pressed", "false");
+     });
+     btn.classList.add("selected");
+     btn.setAttribute("aria-pressed", "true");
+    });
+   });
+
+   // Modal controls
+   const btnViaje = document.getElementById("btn-viaje");
+   const modalViaje = document.getElementById("modal-viaje");
+   const closeViaje = document.getElementById("close-viaje");
+
+   const btnMio = document.getElementById("btn-mio");
+   const modalMio = document.getElementById("modal-mio");
+   const closeMio = document.getElementById("close-mio");
+
+   const modalLocalidad = document.getElementById("modal-localidad");
+   const closeLocalidad = document.getElementById("close-localidad");
+   const localidadContent = document.getElementById("localidad-content");
+   const localidadTitle = document.getElementById("modal-localidad-title");
+
+   btnViaje.addEventListener("click", () => {
+    modalViaje.classList.add("show");
+   });
+   closeViaje.addEventListener("click", () => {
+    modalViaje.classList.remove("show");
+   });
+   modalViaje.addEventListener("click", (e) => {
+    if (e.target === modalViaje) {
+     modalViaje.classList.remove("show");
+    }
+   });
+
+   btnMio.addEventListener("click", () => {
+    modalMio.classList.add("show");
+   });
+   closeMio.addEventListener("click", () => {
+    modalMio.classList.remove("show");
+   });
+   modalMio.addEventListener("click", (e) => {
+    if (e.target === modalMio) {
+     modalMio.classList.remove("show");
+    }
+   });
+
+   closeLocalidad.addEventListener("click", () => {
+    modalLocalidad.classList.remove("show");
+   });
+   modalLocalidad.addEventListener("click", (e) => {
+    if (e.target === modalLocalidad) {
+     modalLocalidad.classList.remove("show");
+    }
+   });
+
+   // Optional: handle login form submit with animation
+   const loginForm = document.getElementById("login-form");
+   const submitBtn = loginForm.querySelector(".submit-btn");
+   const spinner = submitBtn.querySelector(".spinner");
+   const btnText = submitBtn.querySelector("span");
+
+   loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = loginForm.email.value.trim();
+    const password = loginForm.password.value.trim();
+
+    // Start loading animation
+    submitBtn.classList.add("loading");
+    submitBtn.disabled = true;
+
+    setTimeout(() => {
+     if (email === "pruebadaniel@gmail.com" && password === "Daniel12345") {
+      alert("Inicio de sesión exitoso. ¡Bienvenido, Daniel!");
+      modalMio.classList.remove("show");
+      loginForm.reset();
+     } else {
+      alert("Credenciales incorrectas. Por favor, inténtalo de nuevo.");
+     }
+     // Stop loading animation
+     submitBtn.classList.remove("loading");
+     submitBtn.disabled = false;
+    }, 1500); // simulate 1.5s loading
+   });
+
+   // Localidad info data
+   const localidadesInfo = {
+    Usaquén: {
+     description:
+      "Usaquén es una localidad al norte de Bogotá, conocida por su ambiente colonial y su vibrante zona gastronómica.",
+     lugares:
+      "Parque Usaquén, Centro Comercial Hacienda Santa Bárbara, Mercado de las Pulgas.",
+     rutas:
+      "Ruta de buses SITP: 1, 2, 3. Transmilenio: Estación Usaquén (próxima apertura).",
+    },
+    Chapinero: {
+     description:
+      "Chapinero es una zona moderna y diversa, con una mezcla de vida nocturna, cultura y comercio.",
+     lugares:
+      "Parque de Lourdes, Zona G (gastronómica), Centro Comercial Andino.",
+     rutas:
+      "Ruta de buses SITP: 10, 11, 12. Transmilenio: Estación Calle 72.",
+    },
+    "Santa Fe": {
+     description:
+      "Santa Fe es el corazón histórico y administrativo de Bogotá, con muchos edificios emblemáticos.",
+     lugares:
+      "Plaza de Bolívar, Museo del Oro, Catedral Primada de Colombia.",
+     rutas:
+      "Ruta de buses SITP: 20, 21, 22. Transmilenio: Estación Museo del Oro.",
+    },
+    "San Cristóbal": {
+     description:
+      "San Cristóbal es una localidad tradicional con una gran riqueza cultural y paisajística.",
+     lugares:
+      "Parque San Cristóbal, Mirador de la Localidad, Iglesia San Cristóbal.",
+     rutas: "Ruta de buses SITP: 30, 31, 32.",
+    },
+    Usme: {
+     description:
+      "Usme es una localidad al sur de Bogotá, con áreas rurales y espacios naturales.",
+     lugares: "Parque Natural Chicaque, Reserva Forestal Protectora.",
+     rutas: "Ruta de buses SITP: 40, 41, 42.",
+    },
+    Tunjuelito: {
+     description:
+      "Tunjuelito es una localidad residencial con buena conectividad y servicios.",
+     lugares: "Parque Tunjuelito, Centro Comercial Tunjuelito.",
+     rutas: "Ruta de buses SITP: 50, 51.",
+    },
+    Bosa: {
+     description:
+      "Bosa es una localidad con una mezcla de zonas urbanas y rurales, con historia y cultura.",
+     lugares: "Parque Principal de Bosa, Iglesia de Bosa.",
+     rutas: "Ruta de buses SITP: 60, 61.",
+    },
+    Kennedy: {
+     description:
+      "Kennedy es una de las localidades más grandes y pobladas, con gran actividad comercial.",
+     lugares: "Parque El Tintal, Centro Comercial Plaza de las Américas.",
+     rutas:
+      "Ruta de buses SITP: 70, 71, 72. Transmilenio: Estación Patio Bonito.",
+    },
+    Fontibón: {
+     description:
+      "Fontibón es una localidad con desarrollo industrial y residencial, cerca del aeropuerto.",
+     lugares: "Parque Fontibón, Centro Comercial Fontibón.",
+     rutas: "Ruta de buses SITP: 80, 81.",
+    },
+    Engativá: {
+     description:
+      "Engativá es una localidad con zonas residenciales y comerciales, con buena infraestructura.",
+     lugares: "Parque Engativá, Centro Comercial Plaza Imperial.",
+     rutas: "Ruta de buses SITP: 90, 91.",
+    },
+    Suba: {
+     description:
+      "Suba es una localidad grande con diversidad cultural y muchas zonas verdes.",
+     lugares: "Parque Metropolitano Simón Bolívar, Centro Comercial Suba.",
+     rutas:
+      "Ruta de buses SITP: 100, 101, 102. Transmilenio: Estación Suba.",
+    },
+    "Barrios Unidos": {
+     description:
+      "Barrios Unidos es una localidad con mezcla de zonas residenciales y comerciales.",
+     lugares: "Parque de los Novios, Centro Comercial Hayuelos.",
+     rutas: "Ruta de buses SITP: 110, 111.",
+    },
+    Teusaquillo: {
+     description:
+      "Teusaquillo es una zona residencial con arquitectura tradicional y parques.",
+     lugares: "Parque El Virrey, Biblioteca Virgilio Barco.",
+     rutas: "Ruta de buses SITP: 120, 121.",
+    },
+    "Los Mártires": {
+     description:
+      "Los Mártires es una localidad céntrica con historia y comercio tradicional.",
+     lugares: "Parque Los Mártires, Mercado de las Pulgas.",
+     rutas: "Ruta de buses SITP: 130, 131.",
+    },
+    "Antonio Nariño": {
+     description:
+      "Antonio Nariño es una localidad residencial con parques y buena conectividad.",
+     lugares: "Parque El Tunal, Biblioteca Pública El Tintal.",
+     rutas: "Ruta de buses SITP: 140, 141.",
+    },
+    "Puente Aranda": {
+     description:
+      "Puente Aranda es una zona industrial y comercial con desarrollo urbano.",
+     lugares: "Parque El Tunal, Centro Comercial Gran Estación.",
+     rutas: "Ruta de buses SITP: 150, 151.",
+    },
+    "La Candelaria": {
+     description:
+      "La Candelaria es el centro histórico y cultural de Bogotá, con arquitectura colonial.",
+     lugares: "Plaza de Bolívar, Museo Botero, Museo del Oro.",
+     rutas: "Ruta de buses SITP: 160, 161.",
+    },
+    "Rafael Uribe Uribe": {
+     description:
+      "Rafael Uribe Uribe es una localidad residencial con parques y centros culturales.",
+     lugares: "Parque Rafael Uribe Uribe, Biblioteca Pública Rafael Uribe Uribe.",
+     rutas: "Ruta de buses SITP: 170, 171.",
+    },
+    "Ciudad Bolívar": {
+     description:
+      "Ciudad Bolívar es una localidad con zonas rurales y urbanas, con gran biodiversidad.",
+     lugares: "Parque Natural Chingaza, Reserva Forestal.",
+     rutas: "Ruta de buses SITP: 180, 181.",
+    },
+    Sumapaz: {
+     description:
+      "Sumapaz es una zona rural protegida, conocida por su páramo y biodiversidad.",
+     lugares: "Páramo de Sumapaz, Reserva Natural.",
+     rutas: "Acceso limitado, principalmente por transporte privado.",
+    },
+   };
+
+   // Show localidad info modal with content
+   const localidadesList = document.getElementById("localidades-list");
+
+   localidadesList.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-localidad]");
+    if (!btn) return;
+    const localidad = btn.getAttribute("data-localidad");
+    if (!localidad || !localidadesInfo[localidad]) return;
+
+    const info = localidadesInfo[localidad];
+    localidadTitle.textContent = localidad;
+    localidadContent.innerHTML = `
+      <p><strong>Descripción:</strong> ${info.description}</p>
+      <p><strong>Lugares bonitos para visitar:</strong> ${info.lugares}</p>
+      <p><strong>Rutas de bus:</strong> ${info.rutas}</p>
+    `;
+    modalLocalidad.classList.add("show");
+   });
+  </script>
+ </body>
+</html>
